@@ -302,6 +302,15 @@
                             e.originalEvent.touches[s.t].pageX,
                             e.originalEvent.touches[s.t].pageY
                             );
+
+                if (v == s.cv) return;
+
+                if (
+                    s.cH
+                    && (s.cH(v) === false)
+                ) return;
+
+
                 s.change(s._validate(v));
                 s._draw();
             };
@@ -336,6 +345,13 @@
 
             var mouseMove = function (e) {
                 var v = s.xy2val(e.pageX, e.pageY);
+                if (v == s.cv) return;
+
+                if (
+                    s.cH
+                    && (s.cH(v) === false)
+                ) return;
+
                 s.change(s._validate(v));
                 s._draw();
             };
@@ -547,6 +563,12 @@
                                 ,deltaX = ori.detail || ori.wheelDeltaX
                                 ,deltaY = ori.detail || ori.wheelDeltaY
                                 ,v = parseInt(s.$.val()) + (deltaX>0 || deltaY>0 ? s.o.step : deltaX<0 || deltaY<0 ? -s.o.step : 0);
+
+                            if (
+                                s.cH
+                                && (s.cH(v) === false)
+                            ) return;
+
                             s.val(v);
                         }
                 , kval, to, m = 1, kv = {37:-s.o.step, 38:s.o.step, 39:s.o.step, 40:-s.o.step};
@@ -674,12 +696,7 @@
         };
 
         this.change = function (v) {
-            if (v == this.cv) return;
             this.cv = v;
-            if (
-                this.cH
-                && (this.cH(v) === false)
-            ) return;
             this.$.val(v);
         };
 
@@ -706,7 +723,7 @@
 
             c.beginPath();
                 c.strokeStyle = this.o.bgColor;
-                c.arc(this.xy, this.xy, this.radius, this.endAngle, this.startAngle, true);
+                c.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
             c.stroke();
 
             if (this.o.displayPrevious) {
