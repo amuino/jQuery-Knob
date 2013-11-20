@@ -141,7 +141,7 @@
                     s.v[k] = $this.val();
 
                     $this.bind(
-                        'change input'
+                        'change keyup'
                         , function () {
                             var val = {};
                             val[k] = $this.val();
@@ -159,7 +159,7 @@
                 (this.v == '') && (this.v = this.o.min);
 
                 this.$.bind(
-                    'change input'
+                    'change keyup'
                     , function () {
                         s.val(s._validate(s.$.val()));
                     }
@@ -501,13 +501,12 @@
         this.val = function (v) {
             if (null != v) {
                 var newValue = this.o.stopper ? max(min(v, this.o.max), this.o.min) : v;
-                if (newValue == this.cv) return;
-                this.cv = newValue;
                 if (
-                    this.cH
+                    newValue != this.cv // avoid double callback for same value
+                    && this.cH
                     && (this.cH(this.cv) === false)
                 ) return;
-                this.v = this.cv;
+                this.v = this.cv = newValue;
                 this.$.val(this.v);
                 this._draw();
             } else {
